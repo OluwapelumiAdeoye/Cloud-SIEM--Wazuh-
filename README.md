@@ -114,5 +114,5 @@ siem_aws/
 
 ## Author
 
-Built by Adeoye — personal cloud security project.  
-[LinkedIn](https://linkedin.com/in/yourprofile) · [Notion write-up](https://notion.so/yourpage)
+Built by Oluwapelumi Adeoye — Personal Cloud Security Project.  
+[LinkedIn](www.linkedin.com/in/oluwapelumiadeoyedavid) · [Notion write-up](https://oluwapelumi-adeoye.notion.site/Cloud-Based-SIEM-Security-Information-and-Event-Management-System-hosted-on-AWS-36d282b9dd9180758c06c52851195c4f)
