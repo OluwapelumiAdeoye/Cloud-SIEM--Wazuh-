@@ -1,0 +1,16 @@
+{
+  "QueueConfigurations": [
+    {
+      "QueueArn": "arn:aws:sqs:eu-west-1:169424082452:wazuh-cloudtrail-queue",
+      "Events": ["s3:ObjectCreated:*"],
+      "Filter": {
+        "Key": {
+          "FilterRules": [
+            {"Name": "prefix", "Value": "AWSLogs/"},
+            {"Name": "suffix", "Value": ".json.gz"}
+          ]
+        }
+      }
+    }
+  ]
+}

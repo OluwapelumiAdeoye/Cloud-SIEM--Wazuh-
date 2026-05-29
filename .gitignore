@@ -1,0 +1,4 @@
+vars.sh
+*.pem
+*.zip
+aws/
