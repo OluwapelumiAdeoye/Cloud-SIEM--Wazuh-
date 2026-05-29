@@ -3,3 +3,4 @@ vars.sh
 *.zip
 aws/
 *.pem
+*.pem
