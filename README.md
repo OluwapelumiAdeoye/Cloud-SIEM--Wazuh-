@@ -97,8 +97,8 @@ Phase 5 — SNS Email Alerting
 Key Concepts
 
 - Implicit deny — all AWS services deny by default, every permission is explicit
-- Blast radius reduction — least privilege limits damage if any component is compromised
-- Event-driven architecture — react to events, don't poll blindly
+- Blast radius reduction — least privilege limits the damage if any component is compromised
+- Event-driven architecture — react to events, doesn't poll blindly
 - Detection engineering — custom rules targeting real-world attack techniques
 - Alert fatigue prevention — threshold set to level 10+, low-severity events logged not emailed
 
