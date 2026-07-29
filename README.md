@@ -1,10 +1,10 @@
-# Cloud SIEM Lab on AWS
+Cloud SIEM Lab on AWS
 
-A fully operational cloud threat detection pipeline built from scratch using Wazuh, AWS CloudTrail, S3, SQS, EC2, and SNS — entirely from the CLI.
+A fully operational cloud threat detection pipeline built from scratch using Wazuh, AWS CloudTrail, S3, SQS, EC2, and SNS entirely from the CLI.
 
----
 
-## What It Does
+
+What It Does
 
 Monitors every API call in an AWS account, analyzes logs in real time, fires custom detection rules mapped to MITRE ATT&CK, and delivers email alerts via SNS.
 
@@ -12,9 +12,8 @@ Monitors every API call in an AWS account, analyzes logs in real time, fires cus
 CloudTrail → S3 → SQS → Wazuh (EC2) → Detection Rules → SNS → Email
 ```
 
----
 
-## Architecture
+Architecture
 
 | Component | Role |
 |-----------|------|
@@ -26,9 +25,8 @@ CloudTrail → S3 → SQS → Wazuh (EC2) → Detection Rules → SNS → Email
 | SSM Session Manager | Zero open ports EC2 access — all sessions audited |
 | SNS Topic | Real-time email alerts for level 10+ rule triggers |
 
----
 
-## Detection Rules
+Detection Rules
 
 | Rule ID | Description | Level | MITRE |
 |---------|-------------|-------|-------|
@@ -38,18 +36,18 @@ CloudTrail → S3 → SQS → Wazuh (EC2) → Detection Rules → SNS → Email
 
 ---
 
-## Security Design Decisions
+Security Design Decisions
 
-- **Least privilege IAM** — Wazuh EC2 role has read-only access to S3 and SQS only
-- **No hardcoded credentials** — EC2 instance role handles auth, temporary credentials auto-rotate
-- **Zero open ports** — no SSH, no port 22. EC2 accessed exclusively via SSM Session Manager
-- **Log integrity** — CloudTrail log file validation enabled, SHA-256 hash per file
-- **Event-driven architecture** — S3 notifies SQS on new log arrival, Wazuh reacts rather than polls blindly
-- **Public access blocked** — S3 bucket hardened at bucket level, not just policy level
+- Least privilege IAM — Wazuh EC2 role has read-only access to S3 and SQS only
+- No hardcoded credentials — EC2 instance role handles auth, temporary credentials auto-rotate
+- Zero open ports — no SSH, no port 22. EC2 accessed exclusively via SSM Session Manager
+- Log integrity — CloudTrail log file validation enabled, SHA-256 hash per file
+- Event-driven architecture — S3 notifies SQS on new log arrival, Wazuh reacts rather than polls blindly
+- Public access blocked — S3 bucket hardened at bucket level, not just policy level
 
 ---
 
-## Project Structure
+Project Structure
 
 ```
 siem_aws/
@@ -57,38 +55,38 @@ siem_aws/
 ├── sqs-policy.json                 # SQS policy — S3 bucket notifications only
 ├── ec2-trust-policy.json           # IAM trust policy — EC2 assume role
 ├── s3-notification.json            # S3 → SQS event notification config
-├── vars.sh                         # Environment variables (do not commit secrets)
+├── vars.sh                         # Environment variables
 ├── screenshots/                    # Dashboard, alert, and CLI screenshots
 └── docs/                           # Full project write-up
 ```
 
 ---
 
-## Build Phases
+Build Phases
 
-**Phase 1 — AWS Infrastructure**
+Phase 1 — AWS Infrastructure
 - S3 bucket with public access block and CloudTrail-only bucket policy
 - Multi-region CloudTrail with log file validation
 - SQS queue wired to S3 event notifications
 - IAM role with least-privilege permissions and EC2 instance profile
 
-**Phase 2 — EC2 & Wazuh Installation**
+Phase 2 — EC2 & Wazuh Installation
 - EC2 t3.medium, Ubuntu 22.04, 20GB EBS, 2GB swap
 - Wazuh 4.7.5 all-in-one install (Manager + Indexer + Dashboard)
 - SSM Session Manager for zero-port access
 
-**Phase 3 — CloudTrail Log Ingestion**
+Phase 3 — CloudTrail Log Ingestion
 - Configured Wazuh `aws-s3` wodle in `ossec.conf`
 - 5-minute polling interval
 - Verified end-to-end pipeline with live CloudTrail events
 
-**Phase 4 — Custom Detection Rules**
+Phase 4 — Custom Detection Rules
 - Three custom rules written in Wazuh XML
 - Chained off base CloudTrail rule (SID 80202) for efficiency
 - Mapped to MITRE ATT&CK framework
 - Live tested — rule 100012 caught real IAM policy attachment
 
-**Phase 5 — SNS Email Alerting**
+Phase 5 — SNS Email Alerting
 - Custom integration script at `/var/ossec/integrations/custom-sns`
 - Publishes to SNS topic via AWS CLI using EC2 instance role
 - Triggers on level 10+ alerts
@@ -96,23 +94,21 @@ siem_aws/
 
 ---
 
-## Key Concepts
+Key Concepts
 
-- **Implicit deny** — all AWS services deny by default, every permission is explicit
-- **Blast radius reduction** — least privilege limits damage if any component is compromised
-- **Event-driven architecture** — react to events, don't poll blindly
-- **Detection engineering** — custom rules targeting real-world attack techniques
-- **Alert fatigue prevention** — threshold set to level 10+, low-severity events logged not emailed
+- Implicit deny — all AWS services deny by default, every permission is explicit
+- Blast radius reduction — least privilege limits damage if any component is compromised
+- Event-driven architecture — react to events, don't poll blindly
+- Detection engineering — custom rules targeting real-world attack techniques
+- Alert fatigue prevention — threshold set to level 10+, low-severity events logged not emailed
 
----
 
-## Stack
+Stack
 
 `AWS CloudTrail` · `S3` · `SQS` · `EC2` · `IAM` · `SSM` · `SNS` · `Wazuh 4.7.5` · `Ubuntu 22.04` · `AWS CLI v2`
 
----
 
-## Author
+Author
 
 Built by Oluwapelumi Adeoye — Personal Cloud Security Project.  
 [LinkedIn](www.linkedin.com/in/oluwapelumiadeoyedavid/) · [Notion write-up](https://oluwapelumi-adeoye.notion.site/Cloud-Based-SIEM-Security-Information-and-Event-Management-System-hosted-on-AWS-36d282b9dd9180758c06c52851195c4f)
